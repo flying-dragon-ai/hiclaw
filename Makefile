@@ -205,18 +205,20 @@ push-native-worker: build-worker ## Push native-arch Worker only (dev)
 # ---------- Test ----------
 
 # Wait for Manager services to be ready (used internally by test target)
+# Uses docker exec to check health inside container (works regardless of port mappings)
 .PHONY: wait-ready
 wait-ready:
 	@echo "==> Waiting for Manager services to be ready..."
 	@TIMEOUT=300; ELAPSED=0; \
 	while [ "$$ELAPSED" -lt "$$TIMEOUT" ]; do \
-		MATRIX=$$(docker exec hiclaw-manager curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:6167/_matrix/client/versions" 2>/dev/null || echo "000"); \
-		MINIO=$$(docker exec hiclaw-manager curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:9000/minio/health/live" 2>/dev/null || echo "000"); \
-		CONSOLE=$$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$${HICLAW_PORT_CONSOLE:-8001}/" 2>/dev/null || echo "000"); \
+		RESULT=$$(docker exec hiclaw-manager bash -c 'curl -s -o /dev/null -w "%{http_code} " "http://127.0.0.1:6167/_matrix/client/versions" 2>/dev/null || echo "000 "; curl -s -o /dev/null -w "%{http_code} " "http://127.0.0.1:9000/minio/health/live" 2>/dev/null || echo "000 "; curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:8001/" 2>/dev/null || echo "000"' 2>/dev/null); \
+		MATRIX=$$(echo "$$RESULT" | tr -d '\n' | cut -d' ' -f1); \
+		MINIO=$$(echo "$$RESULT" | tr -d '\n' | cut -d' ' -f2); \
+		CONSOLE=$$(echo "$$RESULT" | tr -d '\n' | cut -d' ' -f3); \
 		if [ "$$MATRIX" = "200" ] && [ "$$MINIO" = "200" ] && [ "$$CONSOLE" = "200" ]; then \
 			echo "==> Services ready (took $${ELAPSED}s)"; \
-			echo "==> Waiting additional 120s for Manager Agent initialization..."; \
-			sleep 120; \
+			echo "==> Waiting 60s for Manager Agent initialization..."; \
+			sleep 60; \
 			echo "==> Manager Agent should be ready now"; \
 			exit 0; \
 		fi; \
@@ -274,21 +276,10 @@ uninstall: ## Stop and remove Manager + all Worker containers
 		fi; \
 		WORKSPACE_DIR=$$(grep '^HICLAW_WORKSPACE_DIR=' ./hiclaw-manager.env 2>/dev/null | cut -d= -f2-); \
 		if [ -n "$$WORKSPACE_DIR" ] && [ -d "$$WORKSPACE_DIR" ]; then \
-			if [ -t 0 ]; then \
-				printf "  Remove manager workspace '%s'? [y/N] " "$$WORKSPACE_DIR"; \
-				read REPLY; \
-				if [ "$$REPLY" = "y" ] || [ "$$REPLY" = "Y" ]; then \
-					PARENT=$$(dirname "$$WORKSPACE_DIR"); \
-					BASE=$$(basename "$$WORKSPACE_DIR"); \
-					docker run --rm --entrypoint sh -v "$$PARENT:/host-parent" $(LOCAL_MANAGER) -c "rm -rf /host-parent/$$BASE"; \
-					echo "  Removed: $$WORKSPACE_DIR"; \
-				else \
-					echo "  Manager workspace preserved: $$WORKSPACE_DIR"; \
-				fi; \
-			else \
-				echo "  Manager workspace preserved: $$WORKSPACE_DIR"; \
-				echo "  To delete: rm -rf $$WORKSPACE_DIR"; \
-			fi; \
+			PARENT=$$(dirname "$$WORKSPACE_DIR"); \
+			BASE=$$(basename "$$WORKSPACE_DIR"); \
+			docker run --rm --entrypoint sh -v "$$PARENT:/host-parent" $(LOCAL_MANAGER) -c "rm -rf /host-parent/$$BASE"; \
+			echo "  Removed: $$WORKSPACE_DIR"; \
 		fi; \
 	fi
 	-rm -f ./hiclaw-manager.env
