@@ -241,10 +241,12 @@ You have just completed the installation and initialization. As the Manager agen
 The human admin will start chatting with you shortly. Please wait for their response before proceeding with any tasks."
 
     local txn_id="welcome-$(date +%s%N)"
+    local payload
+    payload=$(jq -nc --arg body "${welcome_msg}" '{"msgtype":"m.text","body":$body}')
     mcurl -sf -X PUT "${matrix_url}/_matrix/client/v3/rooms/${room_id}/send/m.room.message/${txn_id}" \
         -H "Authorization: Bearer ${access_token}" \
         -H 'Content-Type: application/json' \
-        -d "{\"msgtype\":\"m.text\",\"body\":\"${welcome_msg}\"}" > /dev/null 2>&1 || {
+        -d "${payload}" > /dev/null 2>&1 || {
         log "WARNING: Failed to send welcome message"
         return 1
     }
