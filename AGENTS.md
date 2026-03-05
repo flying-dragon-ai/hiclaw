@@ -75,6 +75,18 @@ hiclaw/
 | Agent Framework | OpenClaw (fork) | Agent runtime with Matrix plugin, skills, heartbeat |
 | MCP CLI | mcporter | Worker calls MCP Server tools via CLI |
 
+## Changelog Policy
+
+Any change that affects the content of a built image — i.e. modifications under `manager/`, `worker/`, or `openclaw-base/` — **must** be recorded in [`changelog/current.md`](changelog/current.md) before committing.
+
+Format: one bullet per logical change, with a linked commit hash, e.g.:
+```
+- feat(manager): add task-management skill extracted from AGENTS.md ([a1b2c3d](https://github.com/higress-group/hiclaw/commit/a1b2c3d...))
+- fix(manager): fix upgrade-builtins idempotency (duplicate marker insertion) ([e4f5g6h](https://github.com/higress-group/hiclaw/commit/e4f5g6h...))
+```
+
+On release, the workflow automatically renames `current.md` → `vX.Y.Z.md` and creates a fresh `current.md`.
+
 ## Key Design Patterns
 
 1. **All communication in Matrix Rooms**: Human + Manager + Worker are all in the same Room. Human sees everything, can intervene anytime.
