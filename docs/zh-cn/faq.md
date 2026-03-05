@@ -87,6 +87,8 @@ http://<局域网IP>:18080
 
 在 Higress 控制台，创建多条 AI 路由，每条路由配置不同的模型名匹配规则（前缀或正则），分别指向对应的供应商。之后的流程与单供应商完全一致——告诉 Manager 模型名，它会自动完成测试和切换。
 
+参考：[Higress AI 快速开始 — 控制台配置](https://higress.ai/docs/ai/quick-start#%E6%8E%A7%E5%88%B6%E5%8F%B0%E9%85%8D%E7%BD%AE)
+
 ---
 
 ## 如何切换 Worker 的模型

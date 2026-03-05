@@ -87,6 +87,8 @@ In the Higress console, configure the `default-ai-route` route to point to your 
 
 In the Higress console, create multiple AI routes — each with a different model name matching rule (prefix or regex) pointing to the corresponding provider. After that, the process is the same as the single-provider case — just tell Manager the model name and it handles the rest.
 
+Reference: [Higress AI Quick Start — Console Configuration](https://higress.ai/en/docs/ai/quick-start#console-configuration)
+
 ---
 
 ## How to switch a Worker's model
