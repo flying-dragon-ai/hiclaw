@@ -79,6 +79,15 @@ RUN python -m venv /opt/venv/lite \
         --trusted-host "$(echo ${PIP_INDEX_URL} | sed 's|https\?://||;s|/.*||')" \
         /tmp/copaw-worker/
 
+# ---------------------------------------------------------------------------
+# Patch reme in the lite venv to defer heavyweight packages that copaw never
+# uses (chromadb, pandas, elasticsearch, qdrant, mcp …).  Saves ~65 MB RSS.
+# ---------------------------------------------------------------------------
+COPY scripts/patch_reme_lazy.py /tmp/patch_reme_lazy.py
+RUN /opt/venv/lite/bin/python /tmp/patch_reme_lazy.py \
+        /opt/venv/lite/lib/python3.11/site-packages/reme \
+    && rm /tmp/patch_reme_lazy.py
+
 RUN rm -rf /tmp/copaw-worker/ /tmp/lite-copaw/
 
 # Entrypoint script
