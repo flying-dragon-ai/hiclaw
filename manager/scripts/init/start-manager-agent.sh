@@ -303,7 +303,8 @@ if [ -f /root/manager-workspace/openclaw.json ]; then
         | .models.providers["hiclaw-gateway"].models[0].maxTokens = $max
         | .models.providers["hiclaw-gateway"].models[0].input = $input
         | .agents.defaults.model.primary = ("hiclaw-gateway/" + $model)
-        | .commands.restart = true' \
+        | .commands.restart = true
+        | .gateway.controlUi.dangerouslyDisableDeviceAuth = true' \
        /root/manager-workspace/openclaw.json > /tmp/openclaw.json.tmp && \
         mv /tmp/openclaw.json.tmp /root/manager-workspace/openclaw.json
     # Verify the token was written correctly
