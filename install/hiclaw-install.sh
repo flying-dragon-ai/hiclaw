@@ -1787,7 +1787,7 @@ EOF
         -p "${_port_prefix}${HICLAW_PORT_GATEWAY}:8080" \
         -p "${_port_prefix}${HICLAW_PORT_CONSOLE}:8001" \
         -p "${_port_prefix}${HICLAW_PORT_ELEMENT_WEB:-18088}:8088" \
-        -p "${_port_prefix}${HICLAW_PORT_OPENCLAW_CONSOLE:-18888}:18888" \
+        -p "127.0.0.1:${HICLAW_PORT_OPENCLAW_CONSOLE:-18888}:18888" \
         ${DATA_MOUNT_ARGS} \
         ${WORKSPACE_MOUNT_ARGS} \
         ${HOST_SHARE_MOUNT_ARGS} \
