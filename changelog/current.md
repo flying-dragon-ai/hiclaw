@@ -8,5 +8,7 @@ Record image-affecting changes to `manager/`, `worker/`, `openclaw-base/` here b
 - fix(worker): Remote->Local sync pulls Manager-managed files only (allowlist) to avoid overwriting Worker-generated content (e.g. .openclaw sessions, memory)
 - fix(copaw): align sync ownership with OpenClaw worker (AGENTS.md/SOUL.md Worker-managed, push but never pull; allowlist for Remote->Local)
 - fix(manager): switch Matrix room preset from `private_chat` back to `trusted_private_chat` so Workers are auto-joined without needing to accept invites; use `power_level_content_override` to keep Workers at power level 0
-- feat(manager): add `setup-github-mcp.sh` script to mcp-server-management skill for runtime GitHub PAT configuration via chat; update SKILL.md with usage instructions
+- feat(manager): add unified `setup-mcp-server.sh` script to mcp-server-management skill for runtime MCP server creation/update (GitHub as special case with DNS service source); simplify SKILL.md to script-first approach
+- refactor(manager): remove `credential-key` positional arg from `setup-mcp-server.sh` — use unified `accessToken` key for all YAML configs
+- feat(manager): add `--no-reasoning` flag to model-switch and worker-model-switch scripts to allow disabling reasoning; patch `reasoning` field in openclaw.json during model switch
 
