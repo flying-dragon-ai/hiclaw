@@ -1,6 +1,6 @@
 ---
 name: hiclaw-test
-description: Complete HiClaw test cycle including installation, uninstallation, running tests, and exporting debug logs for analysis. Use for (1) verifying HiClaw functionality (2) CI/CD test validation (3) issue diagnosis and debugging (4) pre-merge testing. Trigger words: test HiClaw, run HiClaw tests, hiclaw test, make test, verify HiClaw installation.
+description: "Complete HiClaw test cycle including installation, uninstallation, running tests, and exporting debug logs for analysis. Use for (1) verifying HiClaw functionality (2) CI/CD test validation (3) issue diagnosis and debugging (4) pre-merge testing. Trigger words: test HiClaw, run HiClaw tests, hiclaw test, make test, verify HiClaw installation."
 ---
 
 # HiClaw Test Cycle
